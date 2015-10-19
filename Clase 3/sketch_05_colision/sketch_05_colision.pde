@@ -1,4 +1,4 @@
-int numBalls = 22;
+int numBalls = 202;
 
 
 Ball [] balls;
@@ -14,9 +14,9 @@ void setup() {
 
     Ball ball = new Ball();
 
-    ball.setPosition( random( 0, width ), random( 0, height ) );
+    ball.setPosition( random( 45, width-45 ), random( 45, height-45) );
     ball.setSpeed( random( 3, 5 ), random( 3, 5 ) );
-    ball.setRadius( random(5, 15) );
+    ball.setRadius( random(15, 25) );
     ball.setMass( random(1, 4) );
 
     balls[ indice ] = ball;
@@ -36,17 +36,15 @@ void draw() {
   for ( int indice = 0; indice < balls.length; indice++ ) {
 
     Ball ball = balls[indice];
-    
+
     ball.animate();
-    
+
     ball.show();
-    
+
     doBall2BallCollisions( ball );
-    
+
     doBall2WallCollisions( ball );
-    
   }
-  
 }
 
 
@@ -66,32 +64,45 @@ void doBall2BallCollisions( Ball ball ) {
 
       if ( ( ball.getRadius() + otherBall.getRadius() ) > distance ) {
 
-        ball.setSpeed( ball.getSpeed().mult( -1 ) );
+        float newVelX1 = ( ball.getSpeed().x * ( ball.getMass() - otherBall.getMass() ) + ( 2 * otherBall.getMass() * otherBall.getSpeed().x ) ) / ( ball.getMass() + otherBall.getMass() );
+        float newVelY1 = ( ball.getSpeed().y * ( ball.getMass() - otherBall.getMass() ) + ( 2 * otherBall.getMass() * otherBall.getSpeed().y ) ) / ( ball.getMass() + otherBall.getMass() );
+
+        float newVelX2 = ( otherBall.getSpeed().x * ( otherBall.getMass() - ball.getMass() ) + ( 2 * ball.getMass() * ball.getSpeed().x ) ) / ( otherBall.getMass() + ball.getMass() );
+        float newVelY2= ( otherBall.getSpeed().y * ( otherBall.getMass() - ball.getMass() ) + ( 2 * ball.getMass() * ball.getSpeed().y ) ) / ( otherBall.getMass() + ball.getMass() );
+
+       
+        ball.setSpeed( newVelX1, newVelY1 );
+        otherBall.setSpeed( newVelX2, newVelY2 );
+
+        ball.animate();
+        otherBall.animate();
+        
         
       }
     }
   }
-  
 }
 
 
 void doBall2WallCollisions( Ball ball ) {
 
-  if ( ! inRange( ball.getPosition().x, 0, width ) ) {
+  if ( ! inRange( ball.getPosition().x, ball.getRadius() * 2, width - ball.getRadius() * 2 ) ) {
     ball.setSpeedX( ball.getSpeed().x * -1 );
+
+    ball.animate();
   }
 
-  if ( ! inRange( ball.getPosition().y, 0, height ) ) {
+  if ( ! inRange( ball.getPosition().y, ball.getRadius() * 2, height - ball.getRadius() * 2 ) ) {
     ball.setSpeedY( ball.getSpeed().y * -1 );
+    ball.animate();
   }
-  
 }
 
 
 
 boolean inRange( float value, float rangeMin, float rangeMax ) {
 
-  if ( value <= rangeMin || value >= rangeMax ) {
+  if ( value < rangeMin || value > rangeMax ) {
     return false;
   } else {
     return true;
