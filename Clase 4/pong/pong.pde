@@ -25,7 +25,10 @@ PFont font;
 
 PImage texture;
 
-    
+
+
+boolean shouldDrawBall;
+
 void setup() {
 
   size(1000,500);
@@ -46,6 +49,8 @@ void setup() {
   texture = loadImage("tex.png");
   texture.width = padWidth;
   texture.height = padHeight;
+  
+  shouldDrawBall = false;
 }
 
 
@@ -60,14 +65,33 @@ void resetBall() {
     theBall.setRadius( ballSize );
     theBall.setMass( ballSize / 4 );
     
+    shouldDrawBall = true;
+    
   
 }
 
 void draw() {
 
+   moveBall();
 
-   clearBackground();
+   drawStage();
+   drawBall();
+
+ 
+}
+
+
+void drawStage() {
+  
+   clearBackground();  
+   drawText();
+   drawMiddleLine();
+   drawPads();
    
+}
+
+void drawText() {
+
    fill(255);
    
    text( player1.getName(), 10, 30);
@@ -78,9 +102,11 @@ void draw() {
    text("Points: " + player2.getPoints(), width - 100, 50);
    text("Games Won: " + player2.getTotalWonGames(), width - 100, 70);
 
-   moveBall();
-   
-   stroke(127);
+}
+
+
+void drawMiddleLine() {
+ stroke(127);
    strokeWeight(3);
    
    int numDrawCircles = 20;
@@ -94,16 +120,9 @@ void draw() {
      
    }
    
-   
-   drawBall();
-   
-   drawPads();
-   
-
-  
-}
-
-
+ }
+ 
+ 
 void moveBall() {
   
   theBall.getPosition().add( theBall.getSpeed() );
@@ -116,7 +135,9 @@ void clearBackground() {
   background(0);
 }
 void drawBall() {
-  ellipse( theBall.getPosition().x,theBall.getPosition().y,theBall.getRadius() * 2,theBall.getRadius() * 2);
+  if( shouldDrawBall ) {
+    ellipse( theBall.getPosition().x,theBall.getPosition().y,theBall.getRadius() * 2,theBall.getRadius() * 2);
+  }
 }
 
 void drawPads() {
@@ -129,13 +150,24 @@ void drawPads() {
 }
 
 void newRound() {
+  shouldDrawBall = false;
+  
+  drawStage();
+
+  delay(2000);
   resetBall();
 }
 
 void newGame() {
+  shouldDrawBall = false;
+  drawStage();
+
+  delay(4000);
+
   player1.setPoints(0);
   player2.setPoints(0);
   resetBall();
+
 }
 
 void doBall2PadCollision() {
@@ -159,6 +191,7 @@ void doBall2PadCollision() {
       )
     ) {
       theBall.setSpeedX( theBall.getSpeed().x * -1 );
+      moveBall();
     }
     
   }
