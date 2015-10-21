@@ -13,6 +13,8 @@ int numEstados = 5;
 
 int estado;
 int dificultad;
+boolean [] bricks;
+int numBricks = 50;
 PFont font;
 
 ControlP5 cp5;
@@ -20,7 +22,12 @@ RadioButton r;
 
 void setup() 
 {
-  estado = 1;
+  estado = 2;
+  bricks = new boolean[numBricks];
+  for (int i= 0; i < numBricks; i++ ) {
+    /// bricks[i]= true;
+    bricks[i] = boolean( i%2 );
+  }
 
   size( 1000, 600 );
 
@@ -36,22 +43,19 @@ void setup()
   r.setPosition(width/2 - 380, height/2 + 100);
   r.setItemsPerRow( 3 );
   r.setSize( 50, 50 ).setSpacingColumn( 250 ).setSpacingRow( 10 );
-  r.addItem("facil",0).addItem("intermedio",1).addItem("dificil",2);
-  r.toggle(0);
+  r.addItem("facil", 0).addItem("intermedio", 1).addItem("dificil", 2);
 
   r.hide();
-
-
 }
 
 int contador;
 
 void draw()
 {
-    background(0);
+  background(0);
 
   stroke(255);
-  
+
 
 
   String textoEstado;
@@ -69,9 +73,7 @@ void draw()
     break;
 
   case estadoJugando:
-    println("Jugando");
-    textoEstado = "Jugando";
-    text( textoEstado, width/2 - textWidth(textoEstado)/2, height/2);
+    drawBricks();
     break;
 
 
@@ -87,18 +89,29 @@ void draw()
     textoEstado = "Ganaste";
     text( textoEstado, width/2 - textWidth(textoEstado)/2, height/2);
     break;
-
-
   }
-  
 }
 
-void controlEvent(ControlEvent theEvent){
+void controlEvent(ControlEvent theEvent) {
 
-  if(theEvent.isFrom(r)){
-  dificultad = int(theEvent.getValue());
-  estado++;
-  r.hide();
+  if (theEvent.isFrom(r)) {
+    dificultad = int(theEvent.getValue());
+    estado++;
+    r.hide();
   }
+}
 
+
+//funciones de dibujo
+
+void drawBricks()
+{
+      float brickW = width/numBricks;
+  for (int i = 0; i < numBricks; i++) {
+
+    
+      fill(125);
+      stroke(0);    
+    rect( (i%10)*brickW, floor*(i/10)*brickW, brickW, 20);
+  }
 }
