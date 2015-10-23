@@ -131,7 +131,7 @@ void mouseDragged() {
   // sus valores posibles son -1, 0, ò 1, para indicar en qué sentido se mueven con respecto a los ejes X y Y
   direction = new PVector( 0, 0 );
   
-  if( oldMouse != null ) {
+  if( oldMouse != null ) {  
     
     if( mouseX > oldMouse.x ) {
       direction.x = 1;
